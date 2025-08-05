@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	apiKey = os.Getenv("QRCODE_API_KEY")
+	apiPngGetKey = os.Getenv("QRCODE_IMAGE_GET_API_KEY")
 )
 
 type TitleResponse struct {
@@ -35,7 +35,7 @@ func TitleGetController(c *fiber.Ctx) error {
 	})
 }
 
-func PngGetController(c *fiber.Ctx) error {
+func ImageGetController(c *fiber.Ctx) error {
 	qrcode, err := Qrcode.GetImage(_stringToInt(c.Params("id")))
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).SendString("Error obtaining qrcode data")
@@ -43,7 +43,7 @@ func PngGetController(c *fiber.Ctx) error {
 
 	// because for some reason garmin sdk can't forward header on image request
 	reqApiKey := c.Query("apiKey")
-	if reqApiKey != apiKey {
+	if reqApiKey != apiPngGetKey {
 		return c.SendString("Nope")
 	}
 
