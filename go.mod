@@ -1,6 +1,7 @@
 module github.com/kahnwong/qrcode-api
 
-go 1.24.5
+go 1.25.1
+toolchain go1.24
 
 require (
 	github.com/gofiber/contrib/fiberzerolog v1.0.3
