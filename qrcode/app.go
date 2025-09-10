@@ -6,9 +6,11 @@ import (
 	"os"
 
 	"github.com/jmoiron/sqlx"
+	sqliteBase "github.com/kahnwong/sqlite-base"
 )
 
-var dbFileName string
+const dbName = "qrcode"
+
 var Qrcode *Application
 
 type Application struct {
@@ -59,16 +61,17 @@ func (Qrcode *Application) GetImage(id int) (*QrcodeItem, error) {
 }
 
 func init() {
+	var dbFileName string
 	if os.Getenv("MODE") != "DEVELOPMENT" {
-		dbFileName = "/data/qrcode.sqlite"
+		dbFileName = fmt.Sprintf("/data/%s.sqlite", dbName)
 	} else {
-		dbFileName = "./qrcode.sqlite"
+		dbFileName = fmt.Sprintf("./%s.sqlite", dbName)
 	}
 
 	// init app
-	dbExists := isDBExists()
+	dbExists := sqliteBase.IsDBExists(dbFileName)
 	Qrcode = &Application{
-		DB: initDB(),
+		DB: sqliteBase.InitDB(dbFileName),
 	}
-	Qrcode.InitSchema(dbExists)
+	sqliteBase.InitSchema(dbFileName, Qrcode.DB, tableSchemas, allExpectedColumns, dbExists)
 }
