@@ -1,13 +1,12 @@
 module github.com/kahnwong/qrcode-api
 
 go 1.25.1
-toolchain go1.24
 
 require (
 	github.com/gofiber/contrib/fiberzerolog v1.0.3
 	github.com/gofiber/fiber/v2 v2.52.9
 	github.com/jmoiron/sqlx v1.4.0
-	github.com/kahnwong/sqlite-base v0.0.0-20250910074205-02904aea7c98
+	github.com/kahnwong/sqlite-base v0.0.0-20251120183429-fd206ab57da4
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/nxshock/colorcrop v0.0.0-20210323183931-9fb5e5006ee3
 	github.com/rs/zerolog v1.34.0
