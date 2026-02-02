@@ -4,7 +4,8 @@ go 1.25.1
 
 require (
 	github.com/gofiber/contrib/fiberzerolog v1.0.3
-	github.com/gofiber/fiber/v2 v2.52.10
+	github.com/gofiber/fiber/v2 v2.52.6
+	github.com/gofiber/fiber/v3 v3.0.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/kahnwong/sqlite-base v0.0.0-20251120183429-fd206ab57da4
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
@@ -13,16 +14,16 @@ require (
 )
 
 require (
-	github.com/andybalholm/brotli v1.1.0 // indirect
+	github.com/andybalholm/brotli v1.2.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/klauspost/compress v1.17.9 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/klauspost/compress v1.18.3 // indirect
+	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/mattn/go-sqlite3 v1.14.32 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.51.0 // indirect
+	github.com/valyala/fasthttp v1.69.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/sys v0.40.0 // indirect
 )
