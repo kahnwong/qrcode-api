@@ -69,9 +69,18 @@ func init() {
 	}
 
 	// init app
-	dbExists := sqliteBase.IsDBExists(dbFileName)
+	dbExists, err := sqliteBase.IsDBExists(dbFileName)
+	if err != nil {
+		panic(fmt.Sprintf("failed to check if database exists: %v", err))
+	}
+
+	db, err := sqliteBase.InitDB(dbFileName)
+	if err != nil {
+		panic(fmt.Sprintf("failed to initialize database: %v", err))
+	}
+
 	Qrcode = &Application{
-		DB: sqliteBase.InitDB(dbFileName),
+		DB: db,
 	}
 	sqliteBase.InitSchema(dbFileName, Qrcode.DB, tableSchemas, allExpectedColumns, dbExists)
 }
