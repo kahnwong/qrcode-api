@@ -2,12 +2,12 @@ package qrcode
 
 import (
 	"encoding/base64"
+	"net/http"
 	"os"
 	"strconv"
 
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
-
-	"github.com/gofiber/fiber/v2"
 )
 
 var (
@@ -24,41 +24,44 @@ type QrcodeRequestItem struct {
 	Image string `json:"image"` // base64
 }
 
-func TitleGetController(c *fiber.Ctx) error {
-	qrcode, err := Qrcode.GetTitle(_stringToInt(c.Params("id")))
+func TitleGetController(c *gin.Context) {
+	qrcode, err := Qrcode.GetTitle(_stringToInt(c.Param("id")))
 	if err != nil {
-		return c.Status(fiber.StatusNotFound).SendString("Error obtaining qrcode data")
+		c.String(http.StatusNotFound, "Error obtaining qrcode data")
+		return
 	}
 
-	return c.JSON(TitleResponse{
+	c.JSON(http.StatusOK, TitleResponse{
 		Name: qrcode.Name,
 	})
 }
 
-func ImageGetController(c *fiber.Ctx) error {
-	qrcode, err := Qrcode.GetImage(_stringToInt(c.Params("id")))
+func ImageGetController(c *gin.Context) {
+	qrcode, err := Qrcode.GetImage(_stringToInt(c.Param("id")))
 	if err != nil {
-		return c.Status(fiber.StatusNotFound).SendString("Error obtaining qrcode data")
+		c.String(http.StatusNotFound, "Error obtaining qrcode data")
+		return
 	}
 
 	// because for some reason garmin sdk can't forward header on image request
 	reqApiKey := c.Query("apiKey")
 	if reqApiKey != apiPngGetKey {
-		return c.SendString("Nope")
+		c.String(http.StatusUnauthorized, "Nope")
+		return
 	}
 
-	c.Type("png")
-	return c.Send(qrcode.Image)
+	c.Data(http.StatusOK, "image/png", qrcode.Image)
 }
 
-func AddPostController(c *fiber.Ctx) error {
+func AddPostController(c *gin.Context) {
 	// parse request
 	p := new(QrcodeRequestItem)
-	if err := c.BodyParser(p); err != nil {
+	if err := c.ShouldBindJSON(p); err != nil {
 		log.Error().Err(err).Msg("Error parsing request body")
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Cannot parse JSON request body",
 		})
+		return
 	}
 
 	// insert
@@ -83,8 +86,7 @@ func AddPostController(c *fiber.Ctx) error {
 		log.Printf("Error adding image: %v", err)
 	}
 
-	c.Status(fiber.StatusOK)
-	return c.SendString("Success")
+	c.String(http.StatusOK, "Success")
 }
 
 func _stringToInt(s string) int {

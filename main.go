@@ -4,71 +4,77 @@ import (
 	"crypto/sha256"
 	"crypto/subtle"
 	"fmt"
+	"net/http"
 	"os"
 	"regexp"
 	"strings"
 
-	"github.com/gofiber/contrib/fiberzerolog"
+	"github.com/gin-contrib/logger"
+	"github.com/gin-gonic/gin"
 	"github.com/kahnwong/qrcode-api/qrcode"
 	"github.com/rs/zerolog"
-
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/keyauth"
 )
 
 var (
 	apiKey        = os.Getenv("QRCODE_API_KEY")
 	protectedURLs = []*regexp.Regexp{
 		regexp.MustCompile("^/add$"),
-		regexp.MustCompile("^/title$"),
+		regexp.MustCompile("^/title/"),
 	}
 )
 
-func validateAPIKey(c *fiber.Ctx, key string) (bool, error) {
+func validateAPIKey(key string) bool {
 	hashedAPIKey := sha256.Sum256([]byte(apiKey))
 	hashedKey := sha256.Sum256([]byte(key))
 
-	if subtle.ConstantTimeCompare(hashedAPIKey[:], hashedKey[:]) == 1 {
-		return true, nil
-	}
-	return false, keyauth.ErrMissingOrMalformedAPIKey
+	return subtle.ConstantTimeCompare(hashedAPIKey[:], hashedKey[:]) == 1
 }
 
-func authFilter(c *fiber.Ctx) bool {
-	originalURL := strings.ToLower(c.OriginalURL())
-
+func isProtectedURL(path string) bool {
+	path = strings.ToLower(path)
 	for _, pattern := range protectedURLs {
-		if pattern.MatchString(originalURL) {
-			return false
+		if pattern.MatchString(path) {
+			return true
 		}
 	}
-	return true
+	return false
+}
+
+func authMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if isProtectedURL(c.Request.URL.Path) {
+			apiKey := c.GetHeader("X-API-Key")
+			if apiKey == "" || !validateAPIKey(apiKey) {
+				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Missing or invalid API key"})
+				return
+			}
+		}
+		c.Next()
+	}
 }
 
 func main() {
 	// init
-	app := fiber.New()
+	gin.SetMode(gin.ReleaseMode)
+	router := gin.New()
+	router.Use(gin.Recovery())
 
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
-	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
-	app.Use(fiberzerolog.New(fiberzerolog.Config{
-		Logger: &logger,
-	}))
+	zerologger := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	router.Use(logger.SetLogger(logger.WithLogger(func(_ *gin.Context, l zerolog.Logger) zerolog.Logger {
+		return zerologger
+	})))
 
 	// auth
-	app.Use(keyauth.New(keyauth.Config{
-		Next:      authFilter,
-		KeyLookup: "header:X-API-Key",
-		Validator: validateAPIKey,
-	}))
+	router.Use(authMiddleware())
 
 	// routes
-	app.Get("/title/:id", qrcode.TitleGetController)
-	app.Get("/image/:id:apiKey?", qrcode.ImageGetController)
-	app.Post("/add", qrcode.AddPostController)
+	router.GET("/title/:id", qrcode.TitleGetController)
+	router.GET("/image/:id", qrcode.ImageGetController)
+	router.POST("/add", qrcode.AddPostController)
 
 	// start server
-	err := app.Listen(os.Getenv("LISTEN_ADDR"))
+	err := router.Run(os.Getenv("LISTEN_ADDR"))
 	if err != nil {
 		fmt.Println("Error starting server", err)
 	}
