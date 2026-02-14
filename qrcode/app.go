@@ -60,6 +60,26 @@ func (Qrcode *Application) GetImage(id int) (*QrcodeItem, error) {
 	return &qrcodeItem, nil
 }
 
+func initializeApp(dbFileName string) (*Application, error) {
+	dbExists, err := sqliteBase.IsDBExists(dbFileName)
+	if err != nil {
+		return nil, fmt.Errorf("failed to check if database exists: %w", err)
+	}
+
+	db, err := sqliteBase.InitDB(dbFileName)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize database: %w", err)
+	}
+
+	app := &Application{
+		DB: db,
+	}
+
+	sqliteBase.InitSchema(dbFileName, app.DB, tableSchemas, allExpectedColumns, dbExists)
+
+	return app, nil
+}
+
 func init() {
 	var dbFileName string
 	if os.Getenv("MODE") != "DEVELOPMENT" {
@@ -68,19 +88,10 @@ func init() {
 		dbFileName = fmt.Sprintf("./%s.sqlite", dbName)
 	}
 
-	// init app
-	dbExists, err := sqliteBase.IsDBExists(dbFileName)
+	app, err := initializeApp(dbFileName)
 	if err != nil {
-		panic(fmt.Sprintf("failed to check if database exists: %v", err))
+		panic(fmt.Sprintf("failed to initialize application: %v", err))
 	}
 
-	db, err := sqliteBase.InitDB(dbFileName)
-	if err != nil {
-		panic(fmt.Sprintf("failed to initialize database: %v", err))
-	}
-
-	Qrcode = &Application{
-		DB: db,
-	}
-	sqliteBase.InitSchema(dbFileName, Qrcode.DB, tableSchemas, allExpectedColumns, dbExists)
+	Qrcode = app
 }
