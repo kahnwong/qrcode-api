@@ -6,7 +6,7 @@ require (
 	github.com/gin-contrib/logger v1.2.7
 	github.com/gin-gonic/gin v1.12.0
 	github.com/jmoiron/sqlx v1.4.0
-	github.com/kahnwong/sqlite-base v0.0.0-20260426155710-d935075e423a
+	github.com/kahnwong/sqlite-base v0.0.0-20260426163322-98e24e0d5c89
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/nxshock/colorcrop v0.0.0-20210323183931-9fb5e5006ee3
 	github.com/rs/zerolog v1.35.1
