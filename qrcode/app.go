@@ -62,8 +62,8 @@ func (Qrcode *Application) GetImage(id int) (*QrcodeItem, error) {
 
 func initializeApp(dbFileName string) (*Application, error) {
 	config := sqliteBase.Config{
-		Path:   dbFileName,
-		Tables: tableDefinitions,
+		Path:         dbFileName,
+		MigrationDir: "migrations",
 	}
 
 	db, err := sqliteBase.Open(config)
