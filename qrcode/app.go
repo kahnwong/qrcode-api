@@ -61,12 +61,12 @@ func (Qrcode *Application) GetImage(id int) (*QrcodeItem, error) {
 }
 
 func initializeApp(dbFileName string) (*Application, error) {
-	dbExists, err := sqliteBase.IsDBExists(dbFileName)
-	if err != nil {
-		return nil, fmt.Errorf("failed to check if database exists: %w", err)
+	config := sqliteBase.Config{
+		Path:   dbFileName,
+		Tables: tableDefinitions,
 	}
 
-	db, err := sqliteBase.InitDB(dbFileName)
+	db, err := sqliteBase.Open(config)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize database: %w", err)
 	}
@@ -74,8 +74,6 @@ func initializeApp(dbFileName string) (*Application, error) {
 	app := &Application{
 		DB: db,
 	}
-
-	sqliteBase.InitSchema(dbFileName, app.DB, tableSchemas, allExpectedColumns, dbExists)
 
 	return app, nil
 }
