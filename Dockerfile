@@ -5,6 +5,7 @@ WORKDIR /build
 COPY go.mod go.sum ./
 RUN go mod download
 COPY qrcode ./qrcode
+COPY migrations ./migrations
 COPY *.go ./
 
 RUN CGO_ENABLED=1 go build -ldflags "-w -s" -o /qrcode-api
@@ -14,6 +15,7 @@ FROM gcr.io/distroless/base-debian13:latest AS deploy
 
 # hadolint ignore=DL3045
 COPY --from=build /qrcode-api /
+COPY --from=build /build/migrations /migrations
 
 EXPOSE 3000
 ENTRYPOINT ["/qrcode-api"]
