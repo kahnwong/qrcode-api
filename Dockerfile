@@ -7,7 +7,7 @@ RUN go mod download
 COPY qrcode ./qrcode
 COPY *.go ./
 
-RUN CGO_ENABLED=1 go build -ldflags "-w -s" -o /cpubench
+RUN CGO_ENABLED=1 go build -ldflags "-w -s" -o /qrcode-api
 
 # hadolint ignore=DL3007
 FROM gcr.io/distroless/base-debian13:latest AS deploy
@@ -15,8 +15,8 @@ FROM gcr.io/distroless/base-debian13:latest AS deploy
 WORKDIR /opt
 
 # hadolint ignore=DL3045
-COPY --from=build /cpubench /opt/
+COPY --from=build /qrcode-api /opt/
 COPY migrations /opt/migrations
 
 EXPOSE 3000
-ENTRYPOINT ["/opt/cpubench"]
+ENTRYPOINT ["/opt/qrcode-api"]
