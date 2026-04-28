@@ -48,6 +48,8 @@ github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnr
 github.com/json-iterator/go v1.1.12/go.mod h1:e30LSqwooZae/UwlEbR2852Gd8hjQvJoHmT4TnhNGBo=
 github.com/kahnwong/sqlite-base v0.0.0-20260426163322-98e24e0d5c89 h1:IEWSVHYJ5Z09VFgqau48VOYle6yOq1NfhIAccd0Zv2c=
 github.com/kahnwong/sqlite-base v0.0.0-20260426163322-98e24e0d5c89/go.mod h1:Bplo+Clc6Q8hDzS6idP10yI8jJsM7bSI3NmTKB55D/c=
+github.com/kahnwong/sqlite-base v0.0.0-20260428044408-00cde68c3eda h1:ITbUYXtoVkLlCBiVvJMJiobhi9xr3BQueSOkc5+S/Y0=
+github.com/kahnwong/sqlite-base v0.0.0-20260428044408-00cde68c3eda/go.mod h1:Bplo+Clc6Q8hDzS6idP10yI8jJsM7bSI3NmTKB55D/c=
 github.com/klauspost/cpuid/v2 v2.3.0 h1:S4CRMLnYUhGeDFDqkGriYKdfoFlDnMtqTiI/sFzhA9Y=
 github.com/klauspost/cpuid/v2 v2.3.0/go.mod h1:hqwkgyIinND0mEev00jJYCxPNVRVXFQeu1XKlok6oO0=
 github.com/leodido/go-urn v1.4.0 h1:WT9HwE9SGECu3lg4d/dIA+jxlljEa1/ffXKmRjqdmIQ=
