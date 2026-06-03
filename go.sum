@@ -50,6 +50,8 @@ github.com/kahnwong/sqlite-base v0.0.0-20260426163322-98e24e0d5c89 h1:IEWSVHYJ5Z
 github.com/kahnwong/sqlite-base v0.0.0-20260426163322-98e24e0d5c89/go.mod h1:Bplo+Clc6Q8hDzS6idP10yI8jJsM7bSI3NmTKB55D/c=
 github.com/kahnwong/sqlite-base v0.0.0-20260428044408-00cde68c3eda h1:ITbUYXtoVkLlCBiVvJMJiobhi9xr3BQueSOkc5+S/Y0=
 github.com/kahnwong/sqlite-base v0.0.0-20260428044408-00cde68c3eda/go.mod h1:Bplo+Clc6Q8hDzS6idP10yI8jJsM7bSI3NmTKB55D/c=
+github.com/kahnwong/sqlite-base v0.0.0-20260603115212-0b9e0770ebb3 h1:5YKzGs2Oe8bGQhb6KGk4WY3FcBxtYY2gNtY9jul4HFQ=
+github.com/kahnwong/sqlite-base v0.0.0-20260603115212-0b9e0770ebb3/go.mod h1:qwkuPmmog5YMFUTDOH0epRggWGB/tLY3/AMfKCu4uNM=
 github.com/klauspost/cpuid/v2 v2.3.0 h1:S4CRMLnYUhGeDFDqkGriYKdfoFlDnMtqTiI/sFzhA9Y=
 github.com/klauspost/cpuid/v2 v2.3.0/go.mod h1:hqwkgyIinND0mEev00jJYCxPNVRVXFQeu1XKlok6oO0=
 github.com/leodido/go-urn v1.4.0 h1:WT9HwE9SGECu3lg4d/dIA+jxlljEa1/ffXKmRjqdmIQ=
@@ -63,6 +65,8 @@ github.com/mattn/go-isatty v0.0.21/go.mod h1:ZXfXG4SQHsB/w3ZeOYbR0PrPwLy+n6xiMrJ
 github.com/mattn/go-sqlite3 v1.14.22/go.mod h1:Uh1q+B4BYcTPb+yiD3kU8Ct7aC0hY9fxUwlHK0RXw+Y=
 github.com/mattn/go-sqlite3 v1.14.42 h1:MigqEP4ZmHw3aIdIT7T+9TLa90Z6smwcthx+Azv4Cgo=
 github.com/mattn/go-sqlite3 v1.14.42/go.mod h1:pjEuOr8IwzLJP2MfGeTb0A35jauH+C2kbHKBr7yXKVQ=
+github.com/mattn/go-sqlite3 v1.14.44 h1:3VSe+xafpbzsLbdr2AWlAZk9yRHiBhTBakioXaCKTF8=
+github.com/mattn/go-sqlite3 v1.14.44/go.mod h1:pjEuOr8IwzLJP2MfGeTb0A35jauH+C2kbHKBr7yXKVQ=
 github.com/mfridman/interpolate v0.0.2 h1:pnuTK7MQIxxFz1Gr+rjSIx9u7qVjf5VOoM/u6BbAxPY=
 github.com/mfridman/interpolate v0.0.2/go.mod h1:p+7uk6oE07mpE/Ik1b8EckO0O4ZXiGAfshKBWLUM9Xg=
 github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
