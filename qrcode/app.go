@@ -1,11 +1,13 @@
 package qrcode
 
 import (
+	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"os"
 
-	"github.com/jmoiron/sqlx"
+	"github.com/kahnwong/qrcode-api/qrcode/store"
 	sqliteBase "github.com/kahnwong/sqlite-base"
 )
 
@@ -14,7 +16,8 @@ const dbName = "qrcode"
 var Qrcode *Application
 
 type Application struct {
-	DB *sqlx.DB
+	DB      *sql.DB
+	Queries *store.Queries
 }
 
 type QrcodeItem struct {
@@ -23,9 +26,15 @@ type QrcodeItem struct {
 	Image []byte `db:"image"`
 }
 
-func (Qrcode *Application) Add(qrcode QrcodeItem) error {
-	query := `INSERT OR REPLACE INTO qrcode (id, name, image) VALUES (?, ?, ?)`
-	_, err := Qrcode.DB.Exec(query, qrcode.ID, qrcode.Name, qrcode.Image)
+func (Qrcode *Application) Add(ctx context.Context, qrcode QrcodeItem) error {
+	err := Qrcode.Queries.UpsertQrcode(ctx, store.UpsertQrcodeParams{
+		ID: int64(qrcode.ID),
+		Name: sql.NullString{
+			String: qrcode.Name,
+			Valid:  true,
+		},
+		Image: qrcode.Image,
+	})
 	if err != nil {
 		return fmt.Errorf("error inserting activity for qrcode: '%s' - %w", qrcode.Name, err)
 	}
@@ -33,31 +42,33 @@ func (Qrcode *Application) Add(qrcode QrcodeItem) error {
 	return nil
 }
 
-func (Qrcode *Application) GetTitle(id int) (*QrcodeItem, error) {
-	query := `SELECT id, name FROM qrcode WHERE id = ?`
-	var qrcodeItem QrcodeItem
-	err := Qrcode.DB.Get(&qrcodeItem, query, id)
+func (Qrcode *Application) GetTitle(ctx context.Context, id int) (*QrcodeItem, error) {
+	row, err := Qrcode.Queries.GetQrcodeTitle(ctx, int64(id))
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("qrcode with ID '%d' not found", id)
 		}
 		return nil, fmt.Errorf("error getting qrcode by ID '%d': %w", id, err)
 	}
 
-	return &qrcodeItem, nil
+	return &QrcodeItem{
+		ID:   int(row.ID),
+		Name: row.Name.String,
+	}, nil
 }
-func (Qrcode *Application) GetImage(id int) (*QrcodeItem, error) {
-	query := `SELECT id, image FROM qrcode WHERE id = ?`
-	var qrcodeItem QrcodeItem
-	err := Qrcode.DB.Get(&qrcodeItem, query, id)
+func (Qrcode *Application) GetImage(ctx context.Context, id int) (*QrcodeItem, error) {
+	row, err := Qrcode.Queries.GetQrcodeImage(ctx, int64(id))
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("qrcode with ID '%d' not found", id)
 		}
 		return nil, fmt.Errorf("error getting qrcode by ID '%d': %w", id, err)
 	}
 
-	return &qrcodeItem, nil
+	return &QrcodeItem{
+		ID:    int(row.ID),
+		Image: row.Image,
+	}, nil
 }
 
 func initializeApp(dbFileName string) (*Application, error) {
@@ -72,7 +83,8 @@ func initializeApp(dbFileName string) (*Application, error) {
 	}
 
 	app := &Application{
-		DB: db,
+		DB:      db,
+		Queries: store.New(db),
 	}
 
 	return app, nil

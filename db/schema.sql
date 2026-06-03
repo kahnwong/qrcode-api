@@ -1,0 +1,5 @@
+CREATE TABLE qrcode (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    image BLOB
+);

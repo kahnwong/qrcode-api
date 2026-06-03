@@ -25,7 +25,7 @@ type QrcodeRequestItem struct {
 }
 
 func TitleGetController(c *gin.Context) {
-	qrcode, err := Qrcode.GetTitle(_stringToInt(c.Param("id")))
+	qrcode, err := Qrcode.GetTitle(c.Request.Context(), _stringToInt(c.Param("id")))
 	if err != nil {
 		c.String(http.StatusNotFound, "Error obtaining qrcode data")
 		return
@@ -37,7 +37,7 @@ func TitleGetController(c *gin.Context) {
 }
 
 func ImageGetController(c *gin.Context) {
-	qrcode, err := Qrcode.GetImage(_stringToInt(c.Param("id")))
+	qrcode, err := Qrcode.GetImage(c.Request.Context(), _stringToInt(c.Param("id")))
 	if err != nil {
 		c.String(http.StatusNotFound, "Error obtaining qrcode data")
 		return
@@ -77,7 +77,7 @@ func AddPostController(c *gin.Context) {
 	imageResizedBytes, _ := pngResize(imageCropBorderBytes)
 
 	//// insert to db
-	err = Qrcode.Add(QrcodeItem{
+	err = Qrcode.Add(c.Request.Context(), QrcodeItem{
 		ID:    p.ID,
 		Name:  p.Name,
 		Image: imageResizedBytes,

@@ -1,3 +1,6 @@
 .env
 qrcode-api
 qrcode.sqlite
+
+# ai
+.codegraph
