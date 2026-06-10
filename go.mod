@@ -9,6 +9,7 @@ require (
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/nxshock/colorcrop v0.0.0-20210323183931-9fb5e5006ee3
 	github.com/rs/zerolog v1.35.1
+	github.com/samber/slog-zerolog/v2 v2.9.2
 )
 
 require (
@@ -59,6 +60,8 @@ require (
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/quic-go/quic-go v0.59.0 // indirect
 	github.com/riza-io/grpc-go v0.2.0 // indirect
+	github.com/samber/lo v1.53.0 // indirect
+	github.com/samber/slog-common v0.21.0 // indirect
 	github.com/sethvargo/go-retry v0.3.0 // indirect
 	github.com/spf13/cobra v1.10.2 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect

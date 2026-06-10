@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"crypto/subtle"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 	"regexp"
@@ -13,6 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kahnwong/qrcode-api/qrcode"
 	"github.com/rs/zerolog"
+	slogzerolog "github.com/samber/slog-zerolog/v2"
 )
 
 var (
@@ -59,8 +61,19 @@ func main() {
 	router := gin.New()
 	router.Use(gin.Recovery())
 
-	zerolog.SetGlobalLevel(zerolog.InfoLevel)
-	zerologger := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	logLevel := zerolog.InfoLevel
+	if envLogLevel := os.Getenv("LOG_LEVEL"); envLogLevel != "" {
+		parsedLogLevel, err := zerolog.ParseLevel(envLogLevel)
+		if err != nil {
+			fmt.Println("Invalid LOG_LEVEL, defaulting to info", err)
+		} else {
+			logLevel = parsedLogLevel
+		}
+	}
+	zerolog.SetGlobalLevel(logLevel)
+	output := zerolog.ConsoleWriter{Out: os.Stderr}
+	zerologger := zerolog.New(output).With().Timestamp().Logger()
+	slog.SetDefault(slog.New(slogzerolog.Option{Logger: &zerologger}.NewZerologHandler()))
 	router.Use(logger.SetLogger(logger.WithLogger(func(_ *gin.Context, l zerolog.Logger) zerolog.Logger {
 		return zerologger
 	})))
