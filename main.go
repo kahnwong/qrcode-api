@@ -9,12 +9,19 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"time"
 
+	ratelimit "github.com/JGLTechnologies/gin-rate-limit"
 	"github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/kahnwong/qrcode-api/qrcode"
 	"github.com/rs/zerolog"
 	slogzerolog "github.com/samber/slog-zerolog/v2"
+)
+
+const (
+	rateLimitWindow   = time.Minute
+	rateLimitRequests = 60
 )
 
 var (
@@ -55,6 +62,30 @@ func authMiddleware() gin.HandlerFunc {
 	}
 }
 
+func rateLimitMiddleware() gin.HandlerFunc {
+	store := ratelimit.InMemoryStore(&ratelimit.InMemoryOptions{
+		Rate:  rateLimitWindow,
+		Limit: rateLimitRequests,
+	})
+
+	return ratelimit.RateLimiter(store, &ratelimit.Options{
+		ErrorHandler: rateLimitErrorHandler,
+		KeyFunc:      func(c *gin.Context) string { return c.ClientIP() },
+	})
+}
+
+func rateLimitErrorHandler(c *gin.Context, info ratelimit.Info) {
+	retryAfter := time.Until(info.ResetTime).Seconds()
+	if retryAfter < 0 {
+		retryAfter = 0
+	}
+
+	c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
+		"error":       "Too many requests",
+		"retry_after": int(retryAfter),
+	})
+}
+
 func main() {
 	// init
 	gin.SetMode(gin.ReleaseMode)
@@ -77,6 +108,9 @@ func main() {
 	router.Use(logger.SetLogger(logger.WithLogger(func(_ *gin.Context, l zerolog.Logger) zerolog.Logger {
 		return zerologger
 	})))
+
+	// rate limiting
+	router.Use(rateLimitMiddleware())
 
 	// auth
 	router.Use(authMiddleware())

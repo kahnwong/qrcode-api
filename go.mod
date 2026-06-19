@@ -3,6 +3,7 @@ module github.com/kahnwong/qrcode-api
 go 1.26.4
 
 require (
+	github.com/JGLTechnologies/gin-rate-limit v1.5.8
 	github.com/gin-contrib/logger v1.2.7
 	github.com/gin-gonic/gin v1.12.0
 	github.com/kahnwong/sqlite-base v0.0.0-20260603115212-0b9e0770ebb3
@@ -19,10 +20,12 @@ require (
 	github.com/bytedance/gopkg v0.1.3 // indirect
 	github.com/bytedance/sonic v1.15.0 // indirect
 	github.com/bytedance/sonic/loader v0.5.0 // indirect
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cloudwego/base64x v0.1.6 // indirect
 	github.com/coreos/go-semver v0.3.1 // indirect
 	github.com/cubicdaiya/gonp v1.0.4 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/structtag v1.2.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.13 // indirect
 	github.com/gin-contrib/sse v1.1.0 // indirect
@@ -59,6 +62,7 @@ require (
 	github.com/pressly/goose/v3 v3.27.1 // indirect
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/quic-go/quic-go v0.59.0 // indirect
+	github.com/redis/go-redis/v9 v9.18.0 // indirect
 	github.com/riza-io/grpc-go v0.2.0 // indirect
 	github.com/samber/lo v1.53.0 // indirect
 	github.com/samber/slog-common v0.21.0 // indirect
