@@ -1,6 +1,6 @@
 module github.com/kahnwong/qrcode-api
 
-go 1.26.4
+go 1.26.5
 
 require (
 	github.com/JGLTechnologies/gin-rate-limit v1.5.8
