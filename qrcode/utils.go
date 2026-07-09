@@ -8,7 +8,6 @@ import (
 	"image/png"
 
 	"github.com/nfnt/resize"
-	"github.com/nxshock/colorcrop"
 	"github.com/rs/zerolog/log"
 )
 
@@ -52,51 +51,70 @@ func pngResize(imageBytes []byte) ([]byte, error) {
 }
 
 func pngCropBorder(imageBytes []byte) ([]byte, error) {
-	// generated via gemini
 	img, err := png.Decode(bytes.NewReader(imageBytes))
 	if err != nil {
 		log.Error().Err(err).Msg("failed to decode PNG image")
+		return nil, err
 	}
 
-	croppedImage := colorcrop.Crop(
-		img,
-		color.RGBA{255, 255, 255, 255}, // crop white border
-		0.5,                            // with 50% threshold
-	)
-
-	// add white border margin
-	margin := 50
-	originalBounds := croppedImage.Bounds()
-	originalWidth := originalBounds.Dx()
-	originalHeight := originalBounds.Dy()
-
-	// Calculate new dimensions with margin
-	newWidth := originalWidth + 2*margin
-	newHeight := originalHeight + 2*margin
-
-	// Create a new RGBA image with the calculated new dimensions
-	newImg := image.NewRGBA(image.Rect(0, 0, newWidth, newHeight))
-
-	// Fill the new image with white color (the margin)
-	for y := 0; y < newHeight; y++ {
-		for x := 0; x < newWidth; x++ {
-			newImg.Set(x, y, color.White)
-		}
+	bounds := img.Bounds()
+	cropBounds, ok := nonWhiteBounds(img, bounds)
+	if !ok {
+		// The image is completely white/transparent. Return it unchanged.
+		return imageBytes, nil
 	}
 
-	// Draw the original image onto the center of the new image
-	drawPoint := image.Point{margin, margin}
-	for y := 0; y < originalHeight; y++ {
-		for x := 0; x < originalWidth; x++ {
-			newImg.Set(drawPoint.X+x, drawPoint.Y+y, croppedImage.At(originalBounds.Min.X+x, originalBounds.Min.Y+y))
-		}
-	}
+	croppedImage := image.NewRGBA(image.Rect(0, 0, cropBounds.Dx(), cropBounds.Dy()))
+	draw.Draw(croppedImage, croppedImage.Bounds(), img, cropBounds.Min, draw.Src)
 
-	//// encode back to bytes
 	var buf bytes.Buffer
-	err = png.Encode(&buf, newImg)
+	err = png.Encode(&buf, croppedImage)
 	if err != nil {
-		log.Error().Err(err).Msg("failed to encode resized PNG image")
+		log.Error().Err(err).Msg("failed to encode cropped PNG image")
 	}
 	return buf.Bytes(), err
+}
+
+func nonWhiteBounds(img image.Image, bounds image.Rectangle) (image.Rectangle, bool) {
+	minX, minY := bounds.Max.X, bounds.Max.Y
+	maxX, maxY := bounds.Min.X, bounds.Min.Y
+
+	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		for x := bounds.Min.X; x < bounds.Max.X; x++ {
+			if isWhiteLike(img.At(x, y)) {
+				continue
+			}
+
+			if x < minX {
+				minX = x
+			}
+			if y < minY {
+				minY = y
+			}
+			if x+1 > maxX {
+				maxX = x + 1
+			}
+			if y+1 > maxY {
+				maxY = y + 1
+			}
+		}
+	}
+
+	if minX >= maxX || minY >= maxY {
+		return image.Rectangle{}, false
+	}
+	return image.Rect(minX, minY, maxX, maxY), true
+}
+
+func isWhiteLike(c color.Color) bool {
+	const whiteThreshold = 245 * 257
+
+	r, g, b, a := c.RGBA()
+	// RGBA returns alpha-premultiplied values. Composite against white so that
+	// transparent or semi-transparent white border pixels are treated as border.
+	r += 0xffff - a
+	g += 0xffff - a
+	b += 0xffff - a
+
+	return r >= whiteThreshold && g >= whiteThreshold && b >= whiteThreshold
 }
