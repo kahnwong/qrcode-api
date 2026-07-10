@@ -6,7 +6,7 @@ require (
 	github.com/JGLTechnologies/gin-rate-limit v1.5.8
 	github.com/gin-contrib/logger v1.2.7
 	github.com/gin-gonic/gin v1.12.0
-	github.com/kahnwong/sqlite-base v0.0.0-20260603115212-0b9e0770ebb3
+	github.com/kahnwong/sqlite-base v0.0.0-20260710035018-7484c4d62e0b
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/rs/zerolog v1.35.1
 	github.com/samber/slog-zerolog/v2 v2.9.2

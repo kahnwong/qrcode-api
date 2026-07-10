@@ -87,6 +87,8 @@ github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnr
 github.com/json-iterator/go v1.1.12/go.mod h1:e30LSqwooZae/UwlEbR2852Gd8hjQvJoHmT4TnhNGBo=
 github.com/kahnwong/sqlite-base v0.0.0-20260603115212-0b9e0770ebb3 h1:5YKzGs2Oe8bGQhb6KGk4WY3FcBxtYY2gNtY9jul4HFQ=
 github.com/kahnwong/sqlite-base v0.0.0-20260603115212-0b9e0770ebb3/go.mod h1:qwkuPmmog5YMFUTDOH0epRggWGB/tLY3/AMfKCu4uNM=
+github.com/kahnwong/sqlite-base v0.0.0-20260710035018-7484c4d62e0b h1:2IyiFNzKru2AOgtPhjgF1+3PTZ/4SoN4+LHc2puZo8Q=
+github.com/kahnwong/sqlite-base v0.0.0-20260710035018-7484c4d62e0b/go.mod h1:qwkuPmmog5YMFUTDOH0epRggWGB/tLY3/AMfKCu4uNM=
 github.com/klauspost/cpuid/v2 v2.3.0 h1:S4CRMLnYUhGeDFDqkGriYKdfoFlDnMtqTiI/sFzhA9Y=
 github.com/klauspost/cpuid/v2 v2.3.0/go.mod h1:hqwkgyIinND0mEev00jJYCxPNVRVXFQeu1XKlok6oO0=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
