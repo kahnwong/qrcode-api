@@ -64,6 +64,9 @@ func pngCropBorder(imageBytes []byte) ([]byte, error) {
 		return imageBytes, nil
 	}
 
+	const borderPadding = 10
+	cropBounds = cropBounds.Inset(-borderPadding).Intersect(bounds)
+
 	croppedImage := image.NewRGBA(image.Rect(0, 0, cropBounds.Dx(), cropBounds.Dy()))
 	draw.Draw(croppedImage, croppedImage.Bounds(), img, cropBounds.Min, draw.Src)
 
