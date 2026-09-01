@@ -3,7 +3,7 @@ module github.com/kahnwong/qrcode-api
 go 1.26.5
 
 require (
-	github.com/JGLTechnologies/gin-rate-limit v1.5.8
+	github.com/JGLTechnologies/gin-rate-limit v1.5.9
 	github.com/gin-contrib/logger v1.2.7
 	github.com/gin-gonic/gin v1.12.0
 	github.com/kahnwong/sqlite-base v0.0.0-20260710035018-7484c4d62e0b

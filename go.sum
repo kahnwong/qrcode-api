@@ -5,6 +5,8 @@ filippo.io/edwards25519 v1.2.0/go.mod h1:xzAOLCNug/yB62zG1bQ8uziwrIqIuxhctzJT18Q
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/JGLTechnologies/gin-rate-limit v1.5.8 h1:KiaHIEbpYxHpDvjhpjIif8fnVmjdw/afCMdGoN1AsB0=
 github.com/JGLTechnologies/gin-rate-limit v1.5.8/go.mod h1:t9eLOUxikPI0TzKy0VYRbZJr7hBP2Qg9E3JigoxF70g=
+github.com/JGLTechnologies/gin-rate-limit v1.5.9 h1:EXbE5sSHG/4oaWSrhFgm5ebFzIAdBwaeIgwia8esUvo=
+github.com/JGLTechnologies/gin-rate-limit v1.5.9/go.mod h1:t9eLOUxikPI0TzKy0VYRbZJr7hBP2Qg9E3JigoxF70g=
 github.com/antlr4-go/antlr/v4 v4.13.1 h1:SqQKkuVZ+zWkMMNkjy5FZe5mr5WURWnlpmOuzYWrPrQ=
 github.com/antlr4-go/antlr/v4 v4.13.1/go.mod h1:GKmUxMtwp6ZgGwZSva4eWPC5mS6vUAmOABFgjdkM7Nw=
 github.com/benbjohnson/clock v1.1.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZxNJlLklBHA=
