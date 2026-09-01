@@ -90,9 +90,9 @@ func initializeApp(dbFileName string) (*Application, error) {
 	return app, nil
 }
 
-func init() {
+func Initialize() error {
 	var dbFileName string
-	if os.Getenv("MODE") != "DEVELOPMENT" {
+	if os.Getenv("MODE") != "development" {
 		dbFileName = fmt.Sprintf("/data/%s.sqlite", dbName)
 	} else {
 		dbFileName = fmt.Sprintf("./%s.sqlite", dbName)
@@ -100,8 +100,9 @@ func init() {
 
 	app, err := initializeApp(dbFileName)
 	if err != nil {
-		panic(fmt.Sprintf("failed to initialize application: %v", err))
+		return fmt.Errorf("failed to initialize application: %w", err)
 	}
 
 	Qrcode = app
+	return nil
 }

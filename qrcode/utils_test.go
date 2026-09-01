@@ -9,14 +9,14 @@ import (
 )
 
 func TestPngCropBorderRemovesWhiteAndNearWhiteMargins(t *testing.T) {
-	img := image.NewRGBA(image.Rect(0, 0, 20, 20))
-	for y := 0; y < 20; y++ {
-		for x := 0; x < 20; x++ {
+	img := image.NewRGBA(image.Rect(0, 0, 40, 40))
+	for y := 0; y < 40; y++ {
+		for x := 0; x < 40; x++ {
 			img.Set(x, y, color.RGBA{R: 248, G: 248, B: 248, A: 255})
 		}
 	}
-	for y := 5; y < 15; y++ {
-		for x := 4; x < 16; x++ {
+	for y := 15; y < 25; y++ {
+		for x := 14; x < 26; x++ {
 			img.Set(x, y, color.Black)
 		}
 	}
@@ -37,7 +37,7 @@ func TestPngCropBorderRemovesWhiteAndNearWhiteMargins(t *testing.T) {
 	}
 
 	got := cropped.Bounds()
-	want := image.Rect(0, 0, 12, 10)
+	want := image.Rect(0, 0, 32, 30)
 	if got != want {
 		t.Fatalf("cropped bounds = %v, want %v", got, want)
 	}

@@ -11,6 +11,6 @@ docker run \
   -p 3000:3000 \
   --env-file .env \
   -v $(pwd)/data:/data \
-  -e LISTEN_ADDR=:3000 \
+  -e LISTEN_ADDR=0.0.0.0:3000 \
   qrcode-api
 ```

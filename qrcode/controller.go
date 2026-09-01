@@ -2,12 +2,11 @@ package qrcode
 
 import (
 	"encoding/base64"
-	"net/http"
+	"log/slog"
 	"os"
 	"strconv"
 
-	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog/log"
+	"github.com/gofiber/fiber/v3"
 )
 
 var (
@@ -24,50 +23,47 @@ type QrcodeRequestItem struct {
 	Image string `json:"image"` // base64
 }
 
-func TitleGetController(c *gin.Context) {
-	qrcode, err := Qrcode.GetTitle(c.Request.Context(), _stringToInt(c.Param("id")))
+func TitleGetController(c fiber.Ctx) error {
+	qrcode, err := Qrcode.GetTitle(c.Context(), _stringToInt(c.Params("id")))
 	if err != nil {
-		c.String(http.StatusNotFound, "Error obtaining qrcode data")
-		return
+		return c.Status(fiber.StatusNotFound).SendString("Error obtaining qrcode data")
 	}
 
-	c.JSON(http.StatusOK, TitleResponse{
+	return c.Status(fiber.StatusOK).JSON(TitleResponse{
 		Name: qrcode.Name,
 	})
 }
 
-func ImageGetController(c *gin.Context) {
-	qrcode, err := Qrcode.GetImage(c.Request.Context(), _stringToInt(c.Param("id")))
+func ImageGetController(c fiber.Ctx) error {
+	qrcode, err := Qrcode.GetImage(c.Context(), _stringToInt(c.Params("id")))
 	if err != nil {
-		c.String(http.StatusNotFound, "Error obtaining qrcode data")
-		return
+		return c.Status(fiber.StatusNotFound).SendString("Error obtaining qrcode data")
 	}
 
 	// because for some reason garmin sdk can't forward header on image request
 	reqApiKey := c.Query("apiKey")
 	if reqApiKey != apiPngGetKey {
-		c.String(http.StatusUnauthorized, "Nope")
-		return
+		return c.Status(fiber.StatusUnauthorized).SendString("Nope")
 	}
 
-	c.Data(http.StatusOK, "image/png", qrcode.Image)
+	c.Set(fiber.HeaderContentType, "image/png")
+	return c.Status(fiber.StatusOK).Send(qrcode.Image)
 }
 
-func AddPostController(c *gin.Context) {
+func AddPostController(c fiber.Ctx) error {
 	// parse request
 	p := new(QrcodeRequestItem)
-	if err := c.ShouldBindJSON(p); err != nil {
-		log.Error().Err(err).Msg("Error parsing request body")
-		c.JSON(http.StatusBadRequest, gin.H{
+	if err := c.Bind().Body(p); err != nil {
+		slog.ErrorContext(c.Context(), "error parsing request body", "error", err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Cannot parse JSON request body",
 		})
-		return
 	}
 
 	// insert
 	imageBytes, err := base64.StdEncoding.DecodeString(p.Image)
 	if err != nil {
-		log.Error().Err(err).Msg("Error decoding base64 image")
+		slog.ErrorContext(c.Context(), "error decoding base64 image", "error", err)
 	}
 
 	//// image processing
@@ -77,22 +73,22 @@ func AddPostController(c *gin.Context) {
 	imageResizedBytes, _ := pngResize(imageCropBorderBytes)
 
 	//// insert to db
-	err = Qrcode.Add(c.Request.Context(), QrcodeItem{
+	err = Qrcode.Add(c.Context(), QrcodeItem{
 		ID:    p.ID,
 		Name:  p.Name,
 		Image: imageResizedBytes,
 	})
 	if err != nil {
-		log.Printf("Error adding image: %v", err)
+		slog.ErrorContext(c.Context(), "error adding image", "error", err)
 	}
 
-	c.String(http.StatusOK, "Success")
+	return c.Status(fiber.StatusOK).SendString("Success")
 }
 
 func _stringToInt(s string) int {
 	id, err := strconv.Atoi(s)
 	if err != nil {
-		log.Error().Err(err).Msgf("Error converting to int: %s", s)
+		slog.Error("error converting to int", "value", s, "error", err)
 	}
 
 	return id

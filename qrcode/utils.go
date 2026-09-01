@@ -6,15 +6,15 @@ import (
 	"image/color"
 	"image/draw"
 	"image/png"
+	"log/slog"
 
 	"github.com/nfnt/resize"
-	"github.com/rs/zerolog/log"
 )
 
 func pngToGrayScale(imageBytes []byte) ([]byte, error) {
 	img, err := png.Decode(bytes.NewReader(imageBytes))
 	if err != nil {
-		log.Error().Err(err).Msg("failed to decode PNG image")
+		slog.Error("failed to decode PNG image", "error", err)
 	}
 
 	// 4. Create a new grayscale image with the same bounds as the original
@@ -29,7 +29,7 @@ func pngToGrayScale(imageBytes []byte) ([]byte, error) {
 	var buf bytes.Buffer
 	err = png.Encode(&buf, grayImage)
 	if err != nil {
-		log.Error().Err(err).Msg("failed to encode resized PNG image")
+		slog.Error("failed to encode resized PNG image", "error", err)
 	}
 	return buf.Bytes(), err
 }
@@ -37,7 +37,7 @@ func pngToGrayScale(imageBytes []byte) ([]byte, error) {
 func pngResize(imageBytes []byte) ([]byte, error) {
 	img, err := png.Decode(bytes.NewReader(imageBytes))
 	if err != nil {
-		log.Error().Err(err).Msg("failed to decode PNG image")
+		slog.Error("failed to decode PNG image", "error", err)
 	}
 	resizedImg := resize.Resize(90, 90, img, resize.Lanczos3)
 
@@ -45,7 +45,7 @@ func pngResize(imageBytes []byte) ([]byte, error) {
 	var buf bytes.Buffer
 	err = png.Encode(&buf, resizedImg)
 	if err != nil {
-		log.Error().Err(err).Msg("failed to encode resized PNG image")
+		slog.Error("failed to encode resized PNG image", "error", err)
 	}
 	return buf.Bytes(), err
 }
@@ -53,7 +53,7 @@ func pngResize(imageBytes []byte) ([]byte, error) {
 func pngCropBorder(imageBytes []byte) ([]byte, error) {
 	img, err := png.Decode(bytes.NewReader(imageBytes))
 	if err != nil {
-		log.Error().Err(err).Msg("failed to decode PNG image")
+		slog.Error("failed to decode PNG image", "error", err)
 		return nil, err
 	}
 
@@ -73,7 +73,7 @@ func pngCropBorder(imageBytes []byte) ([]byte, error) {
 	var buf bytes.Buffer
 	err = png.Encode(&buf, croppedImage)
 	if err != nil {
-		log.Error().Err(err).Msg("failed to encode cropped PNG image")
+		slog.Error("failed to encode cropped PNG image", "error", err)
 	}
 	return buf.Bytes(), err
 }
